@@ -2,7 +2,7 @@ import random
 while True:
     
     #if I put (answer_input) out of the while loop because my value is not going to change I will 
-    #get the same answer again and again because the valuse did not changed therefor I must put 
+    #get the same answer again and again because the valuse did not changed therefore I must put 
     #the (answer_input) inside the while loop to get new answers by changing the given input
 
     answer_input = input("Roll the dice? (y/n): ")
