@@ -5,7 +5,7 @@ while True:
     #get the same answer again and again because the valuse did not changed therefore I must put 
     #the (answer_input) inside the while loop to get new answers by changing the given input
 
-    answer_input = input("Roll the dice? (y/n): ")
+    answer_input = input("Roll the dice? (y/n): ").lower()
 
     if answer_input != 'y' and answer_input != 'n' :
         print("Invalid choice!")
