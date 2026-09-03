@@ -14,5 +14,5 @@ while True:
             print("Too High!")
         elif user_guess < pc_number:
             print("Too Low!")
-    except:
+    except ValueError:
             print("Please enter a valid number")
