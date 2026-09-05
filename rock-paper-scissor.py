@@ -10,12 +10,19 @@ while True:
     if question == 'y':
         try:
             pc_choice = random.choice(list(valid_choices.values()))
-            user_input = valid_choices[input("Rock, paper, or scissers? (r/p/s): ").lower()]
+            user_input = input("Rock, paper, or scissers? (r/p/s): ").lower()
+            print(f"Your choice {valid_choices[user_input]}\nComputer choice {pc_choice}")
 
+            
             if  user_input == pc_choice :
-                print(f"You choice {user_input}\nComputer choice {pc_choice}\nYou Won!")
-            elif    user_input != pc_choice :
-                print(f"You choice {user_input}\nComputer choice {pc_choice}\nYou Lost!")
+                print("Tie!")
+            elif ((user_input == 'r' and pc_choice == 's') or
+                (user_input == 's' and pc_choice == 'p') or
+                (user_input == 'p' and pc_choice == 'r') ):
+                print("You Won!")
+            else:
+                print("You Lost!")
+
 
         except:
             print("Invalid choice")
