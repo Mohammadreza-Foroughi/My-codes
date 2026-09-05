@@ -5,6 +5,7 @@ valid_choices = {'r' : '🪨' , 'p' : '📜' , 's' : '✂️'}
 
 
 while True:
+    #if too dar too baraye ejad loop
 
     question = input('Do you want to play? (y/n)').lower()
     if question == 'y':
