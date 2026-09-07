@@ -22,7 +22,7 @@ def second_question():
 
 def third_question():
     question_3 = input('Qusetion 3: What is the largest ocean on Earth? \nA. Atlantic\nB. Indian\nC. Arctic\nD. Pacific\nYour answer: ').lower()
-    if question_3 == 'a' :
+    if question_3 == 'd' :
         print(colored('Correct!','green'))
         counter [0] += 1
     else:
