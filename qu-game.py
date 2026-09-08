@@ -1,4 +1,5 @@
 from termcolor import colored
+import random
 
 counter = [0]
 
@@ -29,10 +30,15 @@ def third_question():
         print(colored('Wrong! The correct answer is D','red'))
     
 
-def main():
-    first_question()
-    second_question()
-    third_question()
-
-main()
+functions = [first_question,second_question,third_question]
+random.shuffle(functions)
+for func in functions:
+    func()
 print(f'Quiz over! Your final score is {counter[0]} out of 3')
+
+# def main():
+    # first_question()
+    # second_question()
+    # third_question()
+
+# main()
