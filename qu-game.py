@@ -5,7 +5,7 @@ counter = [0]
 
 def first_question():
     question_1 = input('Question 1: What is the capital of France? \nA. Berlin\nB. Madrid\nC. Paris\nD. Rome\nYour answer: ').lower()
-    if question_1 == 'a' :
+    if question_1 == 'c' :
         print(colored('Correct!','green'))
         counter [0] += 1
     else:
