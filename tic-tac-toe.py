@@ -53,7 +53,7 @@ while True:
                               (("X" in ls[1][1]) and ("X" in ls[2][1]) and ("X" in ls[3][1])) or \
                                     (("X" in ls[1][2]) and ("X" in ls[2][2]) and ("X" in ls[3][2])) or \
                                           (("X" in ls[1][3]) and ("X" in ls[2][3]) and ("X" in ls[3][3])):
-              print('O is the winner')
+              print('X is the winner')
               break
 
       elif ((' ') not in ((ls[1][1]) + (ls[1][2]) + (ls[1][3])\
