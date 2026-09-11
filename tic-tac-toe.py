@@ -6,9 +6,9 @@ ls = [
 ]
 
 print(f'''---+---+---\n {ls[1][1]} | {ls[1][2]} | {ls[1][3]} \
-        \n---+---+---\n {ls[2][1]} | {ls[2][2]} | {ls[2][3]} \
-        \n---+---+---\n {ls[3][1]} | {ls[3][2]} | {ls[3][3]} \
-        \n---+---+---''')
+      \n---+---+---\n {ls[2][1]} | {ls[2][2]} | {ls[2][3]} \
+      \n---+---+---\n {ls[3][1]} | {ls[3][2]} | {ls[3][3]} \
+      \n---+---+---''')
 
 while True:
       while True:
@@ -38,29 +38,29 @@ while True:
             if (' ') in ls[int(player_x_row_input)][int(player_x_column_input)]:  
                   ls[int(player_x_row_input)][int(player_x_column_input)] = 'X'
                   print(f'''---+---+---\n {ls[1][1]} | {ls[1][2]} | {ls[1][3]} \
-                        \n---+---+---\n {ls[2][1]} | {ls[2][2]} | {ls[2][3]} \
-                        \n---+---+---\n {ls[3][1]} | {ls[3][2]} | {ls[3][3]} \
-                        \n---+---+---''')
+                  \n---+---+---\n {ls[2][1]} | {ls[2][2]} | {ls[2][3]} \
+                  \n---+---+---\n {ls[3][1]} | {ls[3][2]} | {ls[3][3]} \
+                  \n---+---+---''')
                   break
             else:
                   print('This spot is already taken!!')
 
       if (("X" in ls[1][1]) and ("X" in ls[1][2]) and ("X" in ls[1][3])) or \
       (("X" in ls[2][1]) and ("X" in ls[2][2]) and ("X" in ls[2][3])) or \
-            (("X" in ls[3][1]) and ("X" in ls[3][2]) and ("X" in ls[3][3])) or \
-                  (("X" in ls[1][1]) and ("X" in ls[2][2]) and ("X" in ls[3][3])) or \
-                        (("X" in ls[1][3]) and ("X" in ls[2][2]) and ("X" in ls[3][1])) or \
-                              (("X" in ls[1][1]) and ("X" in ls[2][1]) and ("X" in ls[3][1])) or \
-                                    (("X" in ls[1][2]) and ("X" in ls[2][2]) and ("X" in ls[3][2])) or \
-                                          (("X" in ls[1][3]) and ("X" in ls[2][3]) and ("X" in ls[3][3])):
-              print('X is the winner')
-              break
+      (("X" in ls[3][1]) and ("X" in ls[3][2]) and ("X" in ls[3][3])) or \
+      (("X" in ls[1][1]) and ("X" in ls[2][2]) and ("X" in ls[3][3])) or \
+      (("X" in ls[1][3]) and ("X" in ls[2][2]) and ("X" in ls[3][1])) or \
+      (("X" in ls[1][1]) and ("X" in ls[2][1]) and ("X" in ls[3][1])) or \
+      (("X" in ls[1][2]) and ("X" in ls[2][2]) and ("X" in ls[3][2])) or \
+      (("X" in ls[1][3]) and ("X" in ls[2][3]) and ("X" in ls[3][3])):
+            print('X is the winner')
+            break
 
       elif ((' ') not in ((ls[1][1]) + (ls[1][2]) + (ls[1][3])\
-                  + (ls[2][1]) + (ls[2][2]) + (ls[2][3])\
-                  + (ls[3][1]) + (ls[3][2]) + (ls[3][3]))):
-             print('its a tie')
-             break
+      + (ls[2][1]) + (ls[2][2]) + (ls[2][3])\
+      + (ls[3][1]) + (ls[3][2]) + (ls[3][3]))):
+            print('its a tie')
+            break
       
       while True: 
             while True:
@@ -86,31 +86,31 @@ while True:
                         print('Invalid input!')
 
             if (' ') in ls[int(player_o_row_input)][int(player_o_column_input)]:
-                    ls[int(player_o_row_input)][int(player_o_column_input)] = 'O'
-                    print(f'''---+---+---\n {ls[1][1]} | {ls[1][2]} | {ls[1][3]} \
-                            \n---+---+---\n {ls[2][1]} | {ls[2][2]} | {ls[2][3]} \
-                            \n---+---+---\n {ls[3][1]} | {ls[3][2]} | {ls[3][3]} \
-                            \n---+---+---''')
-                    break
+                  ls[int(player_o_row_input)][int(player_o_column_input)] = 'O'
+                  print(f'''---+---+---\n {ls[1][1]} | {ls[1][2]} | {ls[1][3]} \
+                  \n---+---+---\n {ls[2][1]} | {ls[2][2]} | {ls[2][3]} \
+                  \n---+---+---\n {ls[3][1]} | {ls[3][2]} | {ls[3][3]} \
+                  \n---+---+---''')
+                  break
             else:
-             print('This spot is already taken!!')   
+                  print('This spot is already taken!!')   
 
       if (("O" in ls[1][1]) and ("O" in ls[1][2]) and ("O" in ls[1][3])) or \
       (("O" in ls[2][1]) and ("O" in ls[2][2]) and ("O" in ls[2][3])) or \
-            (("O" in ls[3][1]) and ("O" in ls[3][2]) and ("O" in ls[3][3])) or \
-                  (("O" in ls[1][1]) and ("O" in ls[2][2]) and ("O" in ls[3][3])) or \
-                        (("O" in ls[1][3]) and ("O" in ls[2][2]) and ("O" in ls[3][1])) or \
-                              (("O" in ls[1][1]) and ("O" in ls[2][1]) and ("O" in ls[3][1])) or \
-                                    (("O" in ls[1][2]) and ("O" in ls[2][2]) and ("O" in ls[3][2])) or \
-                                          (("O" in ls[1][3]) and ("O" in ls[2][3]) and ("O" in ls[3][3])):
-              print('O is the winner')
-              break
+      (("O" in ls[3][1]) and ("O" in ls[3][2]) and ("O" in ls[3][3])) or \
+      (("O" in ls[1][1]) and ("O" in ls[2][2]) and ("O" in ls[3][3])) or \
+      (("O" in ls[1][3]) and ("O" in ls[2][2]) and ("O" in ls[3][1])) or \
+      (("O" in ls[1][1]) and ("O" in ls[2][1]) and ("O" in ls[3][1])) or \
+      (("O" in ls[1][2]) and ("O" in ls[2][2]) and ("O" in ls[3][2])) or \
+      (("O" in ls[1][3]) and ("O" in ls[2][3]) and ("O" in ls[3][3])):
+            print('O is the winner')
+            break
       
       elif ((' ') not in ((ls[1][1]) + (ls[1][2]) + (ls[1][3])\
-                  + (ls[2][1]) + (ls[2][2]) + (ls[2][3])\
-                  + (ls[3][1]) + (ls[3][2]) + (ls[3][3]))):
-             print('its a tie')
-             break
+            + (ls[2][1]) + (ls[2][2]) + (ls[2][3])\
+            + (ls[3][1]) + (ls[3][2]) + (ls[3][3]))):
+            print('its a tie')
+            break
       
                   
 
