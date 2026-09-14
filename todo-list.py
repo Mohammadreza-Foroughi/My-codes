@@ -2,13 +2,32 @@ list_tasks = []
 
 def input_check(user_input):
     try:
-      if int(user_input) in range (1,4):
-            return user_input
+        if int(user_input) in range (1,5):
+            return user_input 
+        else:
+            print('Enter a valid choice!!!')
     except ValueError:
         print('Enter a valid choice!!!')
 
-def Veiw_Task(1):
-    print(list_tasks)
+def veiw_task(accepted_input):
+    if accepted_input == '1':
+        for index, task in enumerate(list_tasks, 1):
+            print(f'{index}. {task}')
+
+def add_task(accepted_input):
+    if accepted_input == '2':
+        add_new = input('Enter a new task: ')
+        list_tasks.append(add_new)
+        
+def remove_task(accepted_input):
+    if accepted_input == '3':
+        for index, task in enumerate(list_tasks, 1):
+            print(f'{index}. {task}')
+        try:
+            delete_choice = int(input('Which task do you want to delete? '))
+            list_tasks.pop(delete_choice - 1)
+        except (ValueError, IndexError):
+            print('Invalid choice.')
 
     
 def main():
@@ -20,9 +39,15 @@ def main():
         '3. Remove a Task\n' \
         '4. Exit\n'
         'Enter your choice:')
-        input_check(user_input) 
-        Veiw_Task(1)
-    
+        accepted_input = input_check(user_input) 
+        if accepted_input == '4':
+            print(list_tasks)
+            break
+
+        veiw_task(accepted_input)
+        add_task(accepted_input)
+        remove_task(accepted_input)
+        print(list_tasks)
 
 if __name__ == '__main__':
     main()
