@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>task tracker · compact</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0;
+      font-family: system-ui, 'Segoe UI', Roboto, sans-serif; }
+  body { min-height: 100vh; display: flex; align-items: center; justify-content: center;
+         background: linear-gradient(145deg, #eef5fa, #dae6f0); padding: 1.5rem; }
+
+  .card { width: min(720px, 100%); padding: 2.2rem 2.4rem;
+          background: rgba(255,255,255,.85); backdrop-filter: blur(10px);
+          border-radius: 2.5rem; border: 1px solid rgba(255,255,255,.7);
+          box-shadow: 0 25px 45px -15px rgba(0,30,50,.35), 0 2px 10px rgba(0,0,0,.05); }
+
+  h1 { display: flex; gap: .75rem; align-items: center; margin-bottom: 1.8rem;
+       font-weight: 500; font-size: 1.8rem; color: #123d52; }
+  h1 span { background: #0d3247; color: #fff; font-size: .9rem; padding: .25rem 1rem;
+            border-radius: 40px; }
+
+  .bar-label { display: flex; justify-content: space-between; margin-bottom: .6rem;
+               font-size: .95rem; font-weight: 500; color: #235b78; }
+  .badge { background: #103c52; color: #fff; padding: .25rem 1rem;
+           border-radius: 100px; font-size: .9rem; }
+
+  .track { height: 2.2rem; background: #cbdae6; border-radius: 100px;
+           overflow: hidden; box-shadow: inset 0 3px 8px rgba(0,0,0,.1); }
+  .fill { height: 100%; width: 0%; display: flex; align-items: center;
+          justify-content: flex-end; padding-right: 16px; min-width: 2.2rem;
+          background: linear-gradient(90deg, #4f9bc2, #1b6b93, #0b4b6b);
+          border-radius: 100px; color: #fff; font-size: .85rem; font-weight: 600;
+          transition: width .4s cubic-bezier(.2,.9,.3,1), background .3s; }
+
+  .row { display: flex; justify-content: space-between; align-items: flex-end;
+         margin-top: .6rem; }
+  .big { font-size: 2rem; font-weight: 700; color: #103c52; line-height: 1; }
+  .big small { font-size: 1rem; font-weight: 500; color: #3e6d8c; }
+  .pills { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .4rem;
+           font-size: .75rem; color: #5d86a1; }
+  .pills span { background: #deecf5; padding: .15rem .6rem; border-radius: 20px; }
+
+  .ghost { background: transparent; border: 1px solid #9bb7cc; color: #1a4d66;
+           padding: .5rem 1.3rem; border-radius: 3rem; font-size: .85rem;
+           cursor: pointer; font-family: inherit; }
+  .ghost:hover { background: #e3eef7; }
+
+  .tasks { margin-top: .5rem; border-top: 1px solid rgba(100,140,170,.25);
+           padding-top: 1.5rem; }
+  .tasks h2 { font-size: 1.1rem; color: #1d4e68; }
+  .tasks-head { display: flex; justify-content: space-between; align-items: center;
+                margin-bottom: 1.2rem; }
+  .count { font-size: .85rem; color: #3e6d8c; background: #deecf5;
+           padding: .25rem .9rem; border-radius: 40px; }
+
+  .list { list-style: none; display: flex; flex-direction: column; gap: .65rem;
+          max-height: 400px; overflow-y: auto; padding-right: .2rem;
+          margin-bottom: 1.5rem; overscroll-behavior: contain; }
+  .item { background: rgba(245,250,254,.8); border-radius: 1.2rem;
+          border: 1px solid rgba(200,220,235,.7); overflow: hidden; flex-shrink: 0; }
+  .item.done { background: #e2f0e8; border-color: #a8cfb8; }
+
+  .main { display: flex; align-items: center; gap: .85rem; padding: .7rem 1rem;
+          cursor: pointer; }
+  .main:hover { background: rgba(235,245,253,.7); }
+  .item.done .main { background: rgba(210,235,220,.4); }
+
+  .cb { width: 1.4rem; height: 1.4rem; min-width: 1.4rem; border-radius: .5rem;
+        border: 2px solid #86aec7; background: #fff; display: flex;
+        align-items: center; justify-content: center; }
+  .item.done .cb { background: #2a7a54; border-color: #2a7a54; }
+  .cb svg { width: .9rem; height: .9rem; stroke: #fff; stroke-width: 3;
+            fill: none; opacity: 0; }
+  .item.done .cb svg, .sub.done .cb svg { opacity: 1; }
+
+  .info { flex: 1; min-width: 0; }
+  .label { font-size: .95rem; font-weight: 500; color: #1a3f54;
+           white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item.done .label { text-decoration: line-through; color: #547a68; }
+
+  .meta { display: flex; align-items: center; gap: .6rem; font-size: .75rem;
+          color: #5d86a1; flex-wrap: wrap; }
+  .tag { font-size: .65rem; font-weight: 700; padding: .1rem .5rem;
+         border-radius: 20px; letter-spacing: .4px; text-transform: uppercase; }
+  .tag.sub { background: #d5ecdc; color: #1d6641; }
+  .tag.tsk { background: #f5e6cf; color: #8a5a13; }
+  .sub-badge { background: #dbeaf5; color: #285874; padding: .1rem .55rem;
+               border-radius: 20px; font-size: .7rem; font-weight: 600; }
+  .mini { width: 60px; height: 4px; background: #d3e2ed; border-radius: 10px;
+          overflow: hidden; }
+  .mini > div { height: 100%; background: #2b7aa6; border-radius: 10px; }
+
+  .chev { background: none; border: none; color: #7ea4bc; font-size: .9rem;
+          cursor: pointer; padding: .3rem .5rem; border-radius: .5rem;
+          transition: transform .15s; }
+  .chev.open { transform: rotate(90deg); }
+
+  .del { background: none; border: none; color: #8aaec3; font-size: 1.1rem;
+         cursor: pointer; padding: .2rem .4rem; border-radius: .5rem; }
+  .del:hover { color: #c54f4f; background: #ffeaea; }
+
+  .panel { max-height: 0; overflow: hidden; transition: max-height .3s ease;
+           background: rgba(240,248,253,.6);
+           border-top: 1px solid rgba(180,210,230,.4); }
+  .panel.open { max-height: 2000px; }
+  .inner { padding: .7rem 1rem .9rem 3.2rem; display: flex; flex-direction: column;
+           gap: .45rem; max-height: 200px; overflow-y: auto;
+           overscroll-behavior: auto; }
+
+  .sub { display: flex; align-items: center; gap: .65rem; padding: .4rem .6rem;
+         border-radius: .8rem; cursor: pointer; }
+  .sub:hover { background: rgba(220,238,250,.6); }
+  .sub .cb { width: 1rem; height: 1rem; min-width: 1rem; border-radius: .35rem;
+             border-width: 1.5px; }
+  .sub .cb svg { width: .7rem; height: .7rem; }
+  .sub.done .cb { background: #2a7a54; border-color: #2a7a54; }
+  .sub-label { flex: 1; font-size: .85rem; color: #2d5871; }
+  .sub.done .sub-label { text-decoration: line-through; color: #739b87; }
+
+  .add-row { display: flex; gap: .4rem; margin-top: .3rem; padding-left: .6rem; }
+  .add-row input { flex: 1; border: 1px solid #d0e2ee; border-radius: 2rem;
+                   padding: .4rem .9rem; font-size: .8rem; outline: none;
+                   background: #fff; color: #1a3f54; font-family: inherit; }
+  .add-row input:focus { border-color: #6ba3c7; }
+  .add-row button { background: #e2eef7; color: #1d5a7a; border: 1px solid #bdd5e5;
+                    border-radius: 2rem; padding: .35rem .85rem; font-size: .75rem;
+                    font-weight: 600; cursor: pointer; font-family: inherit; }
+  .add-row button:hover { background: #c9e0ef; }
+
+  .add-box { background: #f2f8fd; border: 1px solid #c8dceb; border-radius: 1.6rem;
+             overflow: hidden; }
+  .add-box:focus-within { border-color: #5b93b5; }
+  .add-line { display: flex; gap: .6rem; align-items: center;
+              padding: .3rem .3rem .3rem 1.2rem; }
+  .add-line input { flex: 1; border: none; background: transparent; font-size: .95rem;
+                    padding: .6rem 0; outline: none; color: #1a3f54;
+                    font-family: inherit; }
+  .toggle { background: transparent; border: 1px solid #b9d3e5; color: #2b6a8f;
+            border-radius: 3rem; padding: .5rem 1rem; font-size: .8rem;
+            font-weight: 600; cursor: pointer; font-family: inherit; }
+  .toggle.active { background: #d5ecdc; border-color: #7fbf9a; color: #1d6641; }
+
+  .primary { background: linear-gradient(135deg, #217099, #0f4b6b); color: #fff;
+             border: none; border-radius: 3rem; padding: .65rem 1.5rem;
+             font-weight: 500; font-size: .9rem; cursor: pointer;
+             font-family: inherit; }
+  .primary:hover { background: linear-gradient(135deg, #2a83b1, #14608a); }
+
+  .staged { display: none; flex-direction: column; gap: .4rem;
+            padding: .8rem 1.2rem .9rem; border-top: 1px dashed #c8dceb; }
+  .staged.show { display: flex; }
+  .staged-head { font-size: .75rem; font-weight: 600; color: #4a7c9c;
+                 text-transform: uppercase; letter-spacing: .3px;
+                 display: flex; justify-content: space-between; }
+  .staged-head em { font-style: normal; font-weight: 500; color: #8fb0c7;
+                    text-transform: none; }
+  .staged-list { display: flex; flex-direction: column; gap: .35rem;
+                 max-height: 140px; overflow-y: auto; }
+  .staged-item { display: flex; align-items: center; gap: .5rem;
+                 background: #e8f3fb; border-radius: .7rem; padding: .35rem .7rem;
+                 font-size: .82rem; color: #2d5871; }
+  .staged-item span:first-child { flex: 1; }
+  .staged-item button { background: none; border: none; color: #a8c2d4;
+                        cursor: pointer; font-size: .8rem; }
+  .staged-item button:hover { color: #c54f4f; }
+
+  .empty { text-align: center; padding: 1.5rem 0 .5rem; color: #8bafc7;
+           font-size: .9rem; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>task tracker <span>40-subtask demo</span></h1>
+
+  <div class="bar-label"><span>overall progress</span>
+    <span class="badge" id="badge">0%</span></div>
+  <div class="track"><div class="fill" id="fill"><span id="inside"></span></div></div>
+  <div class="row">
+    <div class="big"><span id="big">0</span><small>%</small></div>
+    <button class="ghost" id="reset">↺ reset all</button>
+  </div>
+  <div class="pills" id="pills"></div>
+
+  <div class="tasks">
+    <div class="tasks-head"><h2>tasks</h2>
+      <span class="count" id="count">0 / 0 done</span></div>
+    <ul class="list" id="list"></ul>
+    <div class="empty" id="empty" style="display:none">no tasks yet — add one below</div>
+
+    <div class="add-box">
+      <div class="add-line">
+        <input id="taskInput" placeholder="add a new task..." maxlength="80">
+        <button class="toggle" id="toggle">+ subtasks</button>
+        <button class="primary" id="addTask">+ add</button>
+      </div>
+      <div class="staged" id="staged">
+        <div class="staged-head"><span>subtasks for this new task</span>
+          <em>press Enter to add each</em></div>
+        <div class="staged-list" id="stagedList"></div>
+        <div class="add-row">
+          <input id="stagedInput" placeholder="add subtask..." maxlength="60">
+          <button id="addStaged">+ subtask</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const CHECK = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+
+// ---------- state ----------
+let tasks = [
+  { id:'big', label:'🚀 Big project — 40 subtasks', expanded:true,
+    subtasks: Array.from({length:40}, (_,i) => ({
+      id:'b'+i, completed:i<15,
+      label:`Subtask ${i+1} — ${['research','draft','review','revise','finalize','test','document','meet','plan','deploy'][i%10]} step`
+    }))},
+  { id:'t1', label:'Define project scope', subtasks:[
+    {id:'s1', label:'Stakeholder interviews', completed:true},
+    {id:'s2', label:'Write requirements doc', completed:true},
+    {id:'s3', label:'Get sign-off', completed:true}]},
+  { id:'t2', label:'Design UI layout', subtasks:[
+    {id:'s4', label:'Wireframes', completed:true},
+    {id:'s5', label:'High-fidelity mockups'},
+    {id:'s6', label:'Design review'}]},
+  { id:'t3', label:'Build progress tracker', subtasks:[
+    {id:'s7', label:'Progress bar component', completed:true},
+    {id:'s8', label:'Percentage displays', completed:true},
+    {id:'s9', label:'Task list logic'},
+    {id:'s10', label:'Subtask support'}]},
+  { id:'t4', label:'Test & refine', subtasks:[], completed:false }
+];
+
+let staged = [];  // subtasks staged for a new task
+
+// ---------- helpers ----------
+const isTaskDone = t => t.subtasks.length ? t.subtasks.every(s => s.completed) : !!t.completed;
+const stats = t => ({ total: t.subtasks.length,
+                      done: t.subtasks.filter(s => s.completed).length });
+
+function progress() {
+  let total = 0, done = 0, subU = 0, taskU = 0;
+  tasks.forEach(t => {
+    if (t.subtasks.length) { total += t.subtasks.length; subU += t.subtasks.length;
+                             done += t.subtasks.filter(s => s.completed).length; }
+    else { total++; taskU++; if (t.completed) done++; }
+  });
+  return { percent: total ? Math.round(done / total * 100) : 0,
+           done, total, subU, taskU };
+}
+
+// ---------- render ----------
+function render() {
+  const list = $('list');
+  const prevListScroll = list.scrollTop;
+  const prevPanelScrolls = {};
+  list.querySelectorAll('.item').forEach(li => {
+    const p = li.querySelector('.inner');
+    if (p) prevPanelScrolls[li.dataset.id] = p.scrollTop;
+  });
+
+  list.innerHTML = '';
+  $('empty').style.display = tasks.length ? 'none' : 'block';
+
+  tasks.forEach(t => {
+    const s = stats(t);
+    const li = document.createElement('li');
+    li.className = 'item' + (isTaskDone(t) ? ' done' : '');
+    li.dataset.id = t.id;
+
+    // ---- main row ----
+    const main = document.createElement('div');
+    main.className = 'main';
+    main.innerHTML = `
+      <div class="cb">${CHECK}</div>
+      <div class="info">
+        <div class="label">${t.label}</div>
+        <div class="meta">
+          <span class="tag ${s.total ? 'sub' : 'tsk'}">${s.total ? 'subtasks count' : 'task counts'}</span>
+          ${s.total
+            ? `<span class="sub-badge">${s.done}/${s.total} subtasks</span>
+               <div class="mini"><div style="width:${s.done/s.total*100}%"></div></div>`
+            : `<span style="font-size:.72rem;color:#9db9cc">no subtasks</span>`}
+        </div>
+      </div>
+      <button class="chev ${t.expanded ? 'open' : ''}">▶</button>
+      <button class="del">✕</button>`;
+    main.querySelector('.cb').onclick = e => { e.stopPropagation(); toggleTask(t.id); };
+    main.querySelector('.chev').onclick = e => { e.stopPropagation(); t.expanded = !t.expanded; render(); };
+    main.querySelector('.del').onclick = e => { e.stopPropagation(); tasks = tasks.filter(x => x.id !== t.id); render(); };
+    main.onclick = () => toggleTask(t.id);
+    li.appendChild(main);
+
+    // ---- subtask panel ----
+    const panel = document.createElement('div');
+    panel.className = 'panel' + (t.expanded ? ' open' : '');
+    const inner = document.createElement('div');
+    inner.className = 'inner';
+
+    if (!t.subtasks.length) {
+      inner.innerHTML = '<div style="font-size:.8rem;color:#96b3c7;padding:.3rem .6rem;font-style:italic">no subtasks — the task itself counts toward progress</div>';
+    } else {
+      t.subtasks.forEach(sub => {
+        const row = document.createElement('div');
+        row.className = 'sub' + (sub.completed ? ' done' : '');
+        row.innerHTML = `
+          <div class="cb">${CHECK}</div>
+          <span class="sub-label">${sub.label}</span>
+          <button class="del" style="font-size:.85rem">✕</button>`;
+        row.querySelector('.cb').onclick = e => { e.stopPropagation(); toggleSub(t.id, sub.id); };
+        row.querySelector('.del').onclick = e => {
+          e.stopPropagation();
+          t.subtasks = t.subtasks.filter(x => x.id !== sub.id);
+          render();
+        };
+        row.onclick = () => toggleSub(t.id, sub.id);
+        inner.appendChild(row);
+      });
+    }
+
+    // add subtask row
+    const add = document.createElement('div');
+    add.className = 'add-row';
+    add.innerHTML = `<input placeholder="add subtask..." maxlength="60">
+                     <button>+ subtask</button>`;
+    const inp = add.querySelector('input');
+    const btn = add.querySelector('button');
+    const commit = () => { const v = inp.value.trim();
+                           if (v) { addSub(t.id, v); } };
+    btn.onclick = e => { e.stopPropagation(); commit(); };
+    inp.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); commit(); } };
+    inner.appendChild(add);
+
+    panel.appendChild(inner);
+    li.appendChild(panel);
+    list.appendChild(li);
+  });
+
+  // restore scrolls
+  list.scrollTop = prevListScroll;
+  list.querySelectorAll('.item').forEach(li => {
+    const p = li.querySelector('.inner');
+    if (p && prevPanelScrolls[li.dataset.id] != null)
+      p.scrollTop = prevPanelScrolls[li.dataset.id];
+  });
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const { percent, done, total, subU, taskU } = progress();
+  $('fill').style.width = percent + '%';
+  $('badge').textContent = percent + '%';
+  $('big').textContent = percent;
+  $('inside').textContent = percent >= 12 ? percent + '%' : '';
+  $('fill').style.background = percent === 100 && total
+    ? 'linear-gradient(90deg,#2b8c5e,#1b6e4b,#0d4f33)'
+    : 'linear-gradient(90deg,#4f9bc2,#1b6b93,#0b4b6b)';
+  $('count').textContent = `${tasks.filter(isTaskDone).length} / ${tasks.length} tasks done`;
+
+  const p = $('pills'); p.innerHTML = '';
+  const add = txt => { const s = document.createElement('span'); s.textContent = txt; p.appendChild(s); };
+  if (total) add(`${done} / ${total} units done`);
+  if (subU)   add(`${subU} subtask${subU === 1 ? '' : 's'} counted`);
+  if (taskU)  add(`${taskU} standalone task${taskU === 1 ? '' : 's'} counted`);
+}
+
+// ---------- actions ----------
+function toggleTask(id) {
+  const t = tasks.find(x => x.id === id);
+  if (!t) return;
+  if (t.subtasks.length) {
+    const target = !isTaskDone(t);
+    t.subtasks.forEach(s => s.completed = target);
+  } else t.completed = !t.completed;
+  render();
+}
+
+function toggleSub(taskId, subId) {
+  const t = tasks.find(x => x.id === taskId);
+  const s = t && t.subtasks.find(x => x.id === subId);
+  if (!s) return;
+  s.completed = !s.completed;
+  render();
+}
+
+function addSub(taskId, label) {
+  const t = tasks.find(x => x.id === taskId);
+  if (!t) return;
+  t.subtasks.push({ id: 's' + Date.now() + Math.random(), label, completed: false });
+  t.expanded = true;
+  render();
+}
+
+function addTask(label) {
+  const v = label.trim();
+  if (!v) return;
+  tasks.push({
+    id: 't' + Date.now() + Math.random(),
+    label: v,
+    expanded: staged.length > 0,
+    subtasks: staged.map((s, i) => ({
+      id: 's' + Date.now() + '_' + i + Math.random(),
+      label: s.label, completed: false
+    })),
+    completed: false
+  });
+  render();
+}
+
+// ---------- staged subtasks ----------
+function renderStaged() {
+  const list = $('stagedList');
+  list.innerHTML = '';
+  staged.forEach((s, i) => {
+    const row = document.createElement('div');
+    row.className = 'staged-item';
+    row.innerHTML = `<span>• ${s.label}</span><button>✕</button>`;
+    row.querySelector('button').onclick = () => {
+      staged.splice(i, 1); renderStaged();
+    };
+    list.appendChild(row);
+  });
+}
+
+function setSubMode(on) {
+  $('toggle').classList.toggle('active', on);
+  $('toggle').textContent = on ? '− subtasks' : '+ subtasks';
+  $('staged').classList.toggle('show', on);
+  if (on) $('stagedInput').focus();
+}
+
+function pushStaged() {
+  const v = $('stagedInput').value.trim();
+  if (!v) return;
+  staged.push({ label: v });
+  $('stagedInput').value = '';
+  $('stagedInput').focus();
+  renderStaged();
+}
+
+// ---------- events ----------
+$('toggle').onclick = () => setSubMode(!$('toggle').classList.contains('active'));
+$('addStaged').onclick = pushStaged;
+$('stagedInput').onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); pushStaged(); } };
+
+function handleAddTask() {
+  const v = $('taskInput').value;
+  if (!v.trim()) return;
+  addTask(v);
+  $('taskInput').value = '';
+  staged = [];
+  renderStaged();
+  setSubMode(false);
+  $('taskInput').focus();
+}
+$('addTask').onclick = handleAddTask;
+$('taskInput').onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); handleAddTask(); } };
+
+$('reset').onclick = () => {
+  tasks.forEach(t => { t.completed = false; t.subtasks.forEach(s => s.completed = false); });
+  render();
+};
+
+render();
+</script>
+</body>
+</html>
